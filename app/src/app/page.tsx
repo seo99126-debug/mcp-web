@@ -1,4 +1,6 @@
-import { supabase } from "@/utils/supabase";
+import { createClient } from "@/utils/supabase/server";
+import Link from "next/link";
+import LogoutButton from "./LogoutButton";
 
 // 매 요청마다 DB에서 새로 읽는다 (빌드 시점에 고정되지 않게)
 export const dynamic = "force-dynamic";
@@ -12,16 +14,11 @@ type Policy = {
 };
 
 export default async function Home() {
-  if (!supabase) {
-    return (
-      <main className="p-8">
-        <h1 className="text-2xl font-bold mb-4">청년서랍</h1>
-        <p className="text-red-600">
-          NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 환경변수가 없습니다.
-        </p>
-      </main>
-    );
-  }
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: policies, error } = await supabase
     .from("policies")
@@ -30,8 +27,22 @@ export default async function Home() {
 
   return (
     <main className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-1">청년서랍</h1>
-      <p className="text-zinc-500 mb-6">등록된 청년정책 목록</p>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">청년서랍</h1>
+          <p className="text-zinc-500 text-sm">등록된 청년정책 목록</p>
+        </div>
+        {user ? (
+          <div className="flex items-center gap-3 text-sm">
+            <span className="text-zinc-600">{user.email}</span>
+            <LogoutButton />
+          </div>
+        ) : (
+          <Link href="/login" className="text-sm underline">
+            로그인
+          </Link>
+        )}
+      </div>
 
       {error && <p className="text-red-600">오류: {error.message}</p>}
 
