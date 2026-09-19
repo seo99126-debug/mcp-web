@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ──────────────────────────────────────────────────────────────
+   청년서랍 디자인 토큰 — M0 Design·Planning 확정본
+
+   판정 상태 색은 화면마다 다시 고르지 않는다. 라벨·문구는
+   src/lib/verdict.ts 가 원본이고, 여기는 색만 담는다.
+
+   빨강(alert-*)은 판정 상태가 아니다. 시스템 오류와 마감 임박에만
+   쓴다. 부적격을 빨강으로 칠하면 사용자는 "내가 뭘 잘못했다"로
+   읽는데, 부적격은 사용자의 실수가 아니라 정책의 조건이다.
+   ────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* 한글 본문은 고딕, 공고문 인용은 명조.
+     인용을 색이나 테두리가 아니라 활자체로 구분해야 판정 배지 색과
+     섞이지 않는다. layout.tsx 가 next/font 로 이 변수를 채운다. */
+  --font-sans: var(--font-noto-sans-kr), system-ui, sans-serif;
+  --font-serif: var(--font-noto-serif-kr), serif;
+
+  /* 바탕 — 순백 대신 따뜻한 오프화이트. 상태 색 네 가지가 모두
+     연한 틴트라서, 순백 위에 올리면 카드 경계가 사라진다. */
+  --color-ground: #faf8f5;
+  --color-surface: #ffffff;
+  --color-fill: #f2eee8;
+  --color-line: #e3ded7;
+  --color-line-strong: #d6d0c9;
+
+  --color-ink: #1a1817;
+  --color-ink-muted: #5c5651;
+  --color-ink-faint: #6e6862;
+
+  --color-brand: #b4552f;
+  --color-brand-strong: #8e3f20;
+
+  /* 신청 가능 (ELIGIBLE) */
+  --color-pass-fg: #1b6b47;
+  --color-pass-bg: #e4f0e9;
+  --color-pass-line: #bedccb;
+
+  /* 향후 가능 (FUTURE_ELIGIBLE) — 날짜를 뜻하는 파랑.
+     "거절"이 아니라 "언제부터"로 읽히게 한다. */
+  --color-future-fg: #1e5a86;
+  --color-future-bg: #e3edf5;
+  --color-future-line: #c3daea;
+  --color-future-ink: #14314a;
+
+  /* 확인 필요 (NEEDS_INFO) — 아직 judgements.verdict CHECK 제약에 없다.
+     저장하려면 supabase/schema.sql 을 먼저 고쳐야 한다. */
+  --color-info-fg: #6a4c93;
+  --color-info-bg: #ede7f4;
+  --color-info-line: #d6c9e6;
+
+  /* 신청 불가 (INELIGIBLE) — 회색. 빨강이 아닌 이유는 파일 상단 참고. */
+  --color-off-fg: #57524e;
+  --color-off-bg: #eae7e3;
+  --color-off-line: #d6d0c9;
+
+  /* 예약 — 오류, 마감 임박(D-7 이내), 마감 경과에만 */
+  --color-alert-fg: #a32e24;
+  --color-alert-bg: #f7e5e2;
+  --color-alert-line: #e9c7c1;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* 다크 모드는 아직 정의하지 않았다.
+   바탕만 어둡게 뒤집으면 위의 연한 틴트 네 가지가 전부 대비 기준
+   아래로 떨어져서 판정 상태를 구분할 수 없게 된다. 어두운 팔레트를
+   따로 정한 뒤에 켠다. */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
